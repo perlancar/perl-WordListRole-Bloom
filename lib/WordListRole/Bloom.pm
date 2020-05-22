@@ -84,4 +84,9 @@ that testing using a bloom filter can result in a false positive (i.e.
 C<word_exists()> returns true but the word is not actually in the list.
 
 
+=head1 PROVIDED METHODS
+
+=head2 word_exists
+
+
 =head1 SEE ALSO
