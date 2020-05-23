@@ -14,15 +14,16 @@ sub word_exists {
 
     my ($self, $word) = @_;
 
-    my $pkg = ref($self);
-
-    my $dyn = ${"$pkg\::DYNAMIC"};
+    my $class = $self->{orig_class} || ref($self);
+    my $dyn = ${"$class\::DYNAMIC"};
     die "Can't use bloom filter on a dynamic wordlist" if $dyn;
 
-    my $bloom = ${"$pkg\::BLOOM_FILTER"};
+    # XXX also search in dist sharedir
+
+    my $bloom = ${"$class\::BLOOM_FILTER"};
 
     unless ($bloom) {
-        (my $wl_subpkg = $pkg) =~ s/\AWordList:://;
+        (my $wl_subpkg = $class) =~ s/\AWordList:://;
         my $bloom_pkg = "WordListBloom::$wl_subpkg";
         (my $bloom_pkg_pm = "$bloom_pkg.pm") =~ s!::!/!g;
         require $bloom_pkg_pm;
@@ -34,7 +35,7 @@ sub word_exists {
         };
 
         require Algorithm::BloomFilter;
-        ${"$pkg\::BLOOM_FILTER"} = $bloom =
+        ${"$class\::BLOOM_FILTER"} = $bloom =
             Algorithm::BloomFilter->deserialize($bloom_str);
     }
 
