@@ -27,7 +27,8 @@ sub word_exists {
         if ($dist) {
             # if we are loading the installed version of module
             require File::ShareDir;
-            eval { $dir = File::ShareDir::share_dir($dist) };
+            eval { $dir = File::ShareDir::dist_dir($dist) };
+            warn if $@;
         }
         unless ($dir) {
             # if we are loading the dev version of module
